@@ -1,0 +1,26 @@
+popup.js
+  s_238953d1d392ef::t_2ba1046546a95b 36-43,52-54,56
+README.md
+  h_a1f47354e65325 32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "0f85c968bb95d47858a2900bcd121123c48e5c42",
+  "prompts": {},
+  "humans": {
+    "h_a1f47354e65325": {
+      "author": "chenqiangjun <manlu@dtstack.com>"
+    }
+  },
+  "sessions": {
+    "s_238953d1d392ef": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a017c9-2457-7960-9867-d2e3c47b74e5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "chenqiangjun <manlu@dtstack.com>"
+    }
+  }
+}
