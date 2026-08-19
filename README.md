@@ -29,7 +29,7 @@
    - Edge：`edge://extensions`
 3. 打开“开发者模式”。
 4. 点击“加载已解压的扩展程序”。
-5. 选择当前项目目录 [futuresContracts](/Users/edy/github/futuresContracts)。
+5. 选择当前项目目录。
 
 ## 使用方式
 

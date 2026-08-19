@@ -33,6 +33,14 @@ function renderEmptyState() {
   contractsList.innerHTML = '<div class="empty-state">还没有合约，先添加一条记录。</div>';
 }
 
+function getSortChangePct(contract, prices) {
+  const quote = prices[contract.sinaSymbol];
+  if (!quote || quote.error || !Number.isFinite(quote.changePct)) {
+    return Number.NEGATIVE_INFINITY;
+  }
+  return quote.changePct;
+}
+
 function renderContracts(contracts, prices) {
   contractsList.innerHTML = "";
   if (!contracts.length) {
@@ -41,8 +49,11 @@ function renderContracts(contracts, prices) {
   }
 
   const fragment = document.createDocumentFragment();
+  const sortedContracts = [...contracts].sort((left, right) => {
+    return getSortChangePct(right, prices) - getSortChangePct(left, prices);
+  });
 
-  for (const contract of contracts) {
+  for (const contract of sortedContracts) {
     const node = contractTemplate.content.firstElementChild.cloneNode(true);
     const quote = prices[contract.sinaSymbol];
 
