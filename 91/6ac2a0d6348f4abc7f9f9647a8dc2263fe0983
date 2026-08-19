@@ -1,0 +1,31 @@
+.gitignore
+  s_238953d1d392ef::t_e4f1c626ec6180 1-2
+lib/sina.js
+  s_64d333374229d2::t_30eae1d1837b16 1-157
+rules/header-rules.json
+  s_64d333374229d2::t_53334049dd135e 1-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "916ac2a0d6348f4abc7f9f9647a8dc2263fe0983",
+  "prompts": {},
+  "sessions": {
+    "s_238953d1d392ef": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a017c9-2457-7960-9867-d2e3c47b74e5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "chenqiangjun <manlu@dtstack.com>"
+    },
+    "s_64d333374229d2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ef83c-dac1-7882-9dc5-9ac90c06dcbe",
+        "model": "gpt-5.4"
+      },
+      "human_author": "chenqiangjun <manlu@dtstack.com>"
+    }
+  }
+}
