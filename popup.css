@@ -1,0 +1,170 @@
+:root {
+  color-scheme: light;
+  --bg: #f8fafc;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --muted: #64748b;
+  --positive: #dc2626;
+  --negative: #2563eb;
+  --neutral: #64748b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: "SF Pro Display", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  font-size: 11px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app {
+  padding: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.panel {
+  padding-top: 0;
+}
+
+.contract-form {
+  display: grid;
+  gap: 6px;
+}
+
+.contract-form label {
+  display: grid;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.contract-form textarea {
+  width: 100%;
+  min-height: 56px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font: inherit;
+  font-size: 11px;
+  resize: vertical;
+}
+
+.contract-form textarea:focus {
+  outline: 2px solid rgba(37, 99, 235, 0.18);
+  border-color: #93c5fd;
+}
+
+.form-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.primary-button {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 8px;
+  cursor: pointer;
+  background: #0f172a;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.danger-button {
+  border: 0;
+  border-radius: 4px;
+  padding: 2px 4px;
+  background: #fee2e2;
+  color: var(--positive);
+  cursor: pointer;
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.primary-button:active,
+.danger-button:active {
+  transform: scale(0.98);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.status-text {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.contracts-list {
+  display: grid;
+}
+
+.contract-card {
+  min-height: 24px;
+  padding: 4px 0;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 86px 1fr 52px 36px 24px;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.contract-card:first-child {
+  border-top: 0;
+}
+
+.contract-name {
+  font-size: 11px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contract-meta {
+  color: var(--muted);
+  font-size: 10px;
+  text-align: right;
+}
+
+.quote-price {
+  font-size: 12px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.quote-change {
+  font-size: 10px;
+  font-weight: 600;
+  text-align: right;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.is-positive {
+  color: var(--positive);
+}
+
+.is-negative {
+  color: var(--negative);
+}
+
+.is-neutral {
+  color: var(--neutral);
+}
+
+.empty-state {
+  padding: 16px 0;
+  text-align: center;
+  color: var(--muted);
+}

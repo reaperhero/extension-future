@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="panel">
+        <div class="section-header">
+          <span id="statusText" class="status-text"></span>
+        </div>
+        <div id="contractsList" class="contracts-list"></div>
+        <template id="contractTemplate">
+          <article class="contract-card">
+            <span class="contract-name"></span>
+            <span class="quote-price">--</span>
+            <span class="quote-change">--</span>
+            <span class="contract-meta"></span>
+            <button class="danger-button remove-button" type="button">删</button>
+          </article>
+        </template>
+      </section>
+
+      <section class="panel">
+        <form id="contractForm" class="contract-form">
+          <label>
+            <span>合约代码</span>
+            <textarea
+              id="symbolsInput"
+              name="symbols"
+              rows="3"
+              placeholder="例如：CF701;CJ701;FG701;MA610;OI611;PR610;PX611;RM611;SA701;SF611"
+              required
+            ></textarea>
+          </label>
+          <p class="form-hint">支持分号、逗号、空格或换行分隔。</p>
+          <button class="primary-button" type="submit">添加</button>
+        </form>
+      </section>
+    </main>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+  </html>
