@@ -1,0 +1,23 @@
+popup.js
+  s_238953d1d392ef::t_27af88fcfaaa23 1-6,171,176-177,185,194-195,218-219
+lib/contracts.js
+  s_238953d1d392ef::t_4eb21b154685aa 35
+  s_238953d1d392ef::t_27af88fcfaaa23 103,105-106
+  s_238953d1d392ef::t_103cc3c7b25c3b 2-6,8-15,18-19,21-24,26-34,37-40,42-43,45-46,48-51,53,55,57-60,62-63,65-67,69,72,74-75,77-78,80-82,84,86-88,104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "dd160af9edd4c6edb38e5d521821f94095de4299",
+  "prompts": {},
+  "sessions": {
+    "s_238953d1d392ef": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a017c9-2457-7960-9867-d2e3c47b74e5",
+        "model": "gpt-5.5"
+      },
+      "human_author": "chenqiangjun <manlu@dtstack.com>"
+    }
+  }
+}
