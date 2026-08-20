@@ -1,4 +1,9 @@
-import { getContractDisplayName, parseBatchSymbols } from "./lib/contracts.js";
+import {
+  extractContractPrefix,
+  getContractDisplayName,
+  isValidContractSymbol,
+  parseBatchSymbols
+} from "./lib/contracts.js";
 import { fetchAllQuotes } from "./lib/sina.js";
 import { getLocalState, saveContracts, STORAGE_KEYS } from "./lib/storage.js";
 
@@ -163,14 +168,13 @@ async function addContract(event) {
 
   const { contracts = [] } = await getLocalState([STORAGE_KEYS.contracts]);
   const existingSymbols = new Set(contracts.map((item) => item.sinaSymbol));
-  const unknownSymbols = [];
+  const invalidSymbols = [];
   const duplicateSymbols = [];
   const additions = [];
 
   for (const symbol of symbols) {
-    const displayName = getContractDisplayName(symbol);
-    if (!displayName) {
-      unknownSymbols.push(symbol);
+    if (!isValidContractSymbol(symbol)) {
+      invalidSymbols.push(symbol);
       continue;
     }
     if (existingSymbols.has(symbol)) {
@@ -178,6 +182,7 @@ async function addContract(event) {
       continue;
     }
 
+    const displayName = getContractDisplayName(symbol) || extractContractPrefix(symbol) || symbol;
     additions.push({
       displayName,
       sinaSymbol: symbol
@@ -186,8 +191,8 @@ async function addContract(event) {
 
   if (!additions.length) {
     const messages = [];
-    if (unknownSymbols.length) {
-      messages.push(`未识别代码：${unknownSymbols.join("、")}`);
+    if (invalidSymbols.length) {
+      messages.push(`格式不对：${invalidSymbols.join("、")}`);
     }
     if (duplicateSymbols.length) {
       messages.push(`已存在：${duplicateSymbols.join("、")}`);
@@ -210,8 +215,8 @@ async function addContract(event) {
     if (duplicateSymbols.length) {
       messages.push(`已跳过重复：${duplicateSymbols.join("、")}`);
     }
-    if (unknownSymbols.length) {
-      messages.push(`未识别：${unknownSymbols.join("、")}`);
+    if (invalidSymbols.length) {
+      messages.push(`格式不对：${invalidSymbols.join("、")}`);
     }
     if (failedSymbols.length) {
       messages.push(`未更新：${failedSymbols.join("；")}`);
