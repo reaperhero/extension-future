@@ -1,13 +1,11 @@
-.gitignore
-  s_238953d1d392ef::t_e4f1c626ec6180 1-2
-lib/sina.js
-  s_64d333374229d2::t_30eae1d1837b16 1-157
 rules/header-rules.json
-  s_64d333374229d2::t_53334049dd135e 1-27
+  s_64d333374229d2::t_96edff1d3c3ffb 1-27
+lib/contracts.js
+  s_238953d1d392ef::t_c7003c90b812fe 1-57
 ---
 {
   "schema_version": "authorship/3.0.0",
-  "git_ai_version": "1.6.22",
+  "git_ai_version": "1.7.2",
   "base_commit_sha": "916ac2a0d6348f4abc7f9f9647a8dc2263fe0983",
   "prompts": {},
   "sessions": {
@@ -15,7 +13,7 @@ rules/header-rules.json
       "agent_id": {
         "tool": "codex",
         "id": "01a017c9-2457-7960-9867-d2e3c47b74e5",
-        "model": "gpt-5.5"
+        "model": "unknown"
       },
       "human_author": "chenqiangjun <manlu@dtstack.com>"
     },
