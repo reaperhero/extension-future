@@ -15,6 +15,8 @@ const contractsList = document.querySelector("#contractsList");
 const statusText = document.querySelector("#statusText");
 const contractTemplate = document.querySelector("#contractTemplate");
 
+let editingSymbol = "";
+
 function setStatus(text) {
   statusText.textContent = text;
 }
@@ -22,6 +24,27 @@ function setStatus(text) {
 function formatSignedPercent(value) {
   const prefix = value > 0 ? "+" : "";
   return `${prefix}${value.toFixed(2)}%`;
+}
+
+function formatMinuteSecond(timestamp) {
+  const date = new Date(timestamp);
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+  return `${minutes}:${seconds}`;
+}
+
+function formatQuoteTime(value) {
+  const text = String(value || "").trim();
+  if (/^\d{6}$/.test(text)) {
+    return `${text.slice(2, 4)}:${text.slice(4, 6)}`;
+  }
+
+  const timeMatch = text.match(/^\d{1,2}:(\d{2})(?::(\d{2}))?$/);
+  if (timeMatch) {
+    return `${timeMatch[1]}:${timeMatch[2] || "00"}`;
+  }
+
+  return text || "--:--";
 }
 
 function getQuoteTone(changePct) {
@@ -36,6 +59,14 @@ function getQuoteTone(changePct) {
 
 function renderEmptyState() {
   contractsList.innerHTML = '<div class="empty-state">还没有合约，先添加一条记录。</div>';
+}
+
+function createContract(symbol) {
+  const displayName = getContractDisplayName(symbol) || extractContractPrefix(symbol) || symbol;
+  return {
+    displayName,
+    sinaSymbol: symbol
+  };
 }
 
 function getSortChangePct(contract, prices) {
@@ -61,8 +92,13 @@ function renderContracts(contracts, prices) {
   for (const contract of sortedContracts) {
     const node = contractTemplate.content.firstElementChild.cloneNode(true);
     const quote = prices[contract.sinaSymbol];
+    const nameElement = node.querySelector(".contract-name");
 
-    node.querySelector(".contract-name").textContent = `${contract.displayName} ${contract.sinaSymbol}`;
+    nameElement.textContent = `${contract.displayName} ${contract.sinaSymbol}`;
+    nameElement.title = "点击编辑合约代码";
+    nameElement.addEventListener("click", () => {
+      startEditContract(nameElement, contract.sinaSymbol);
+    });
 
     const meta = node.querySelector(".contract-meta");
     const priceElement = node.querySelector(".quote-price");
@@ -74,14 +110,14 @@ function renderContracts(contracts, prices) {
       changeElement.textContent = "--";
       changeElement.classList.add("is-neutral");
     } else if (quote.error) {
-      meta.textContent = "错误";
+      meta.textContent = formatQuoteTime(quote.time);
       priceElement.textContent = "错误";
       changeElement.textContent = "--";
       priceElement.classList.add("is-neutral");
       changeElement.classList.add("is-neutral");
     } else {
       const toneClass = getQuoteTone(quote.changePct);
-      meta.textContent = quote.time || "--:--";
+      meta.textContent = formatQuoteTime(quote.time);
       priceElement.textContent = quote.price.toFixed(1);
       changeElement.textContent = formatSignedPercent(quote.changePct);
       priceElement.classList.add(toneClass);
@@ -100,6 +136,90 @@ function renderContracts(contracts, prices) {
   }
 
   contractsList.appendChild(fragment);
+}
+
+function startEditContract(nameElement, originalSymbol) {
+  if (editingSymbol) {
+    return;
+  }
+
+  editingSymbol = originalSymbol;
+  stopAutoRefresh();
+  setStatus("回车保存");
+
+  const input = document.createElement("input");
+  input.className = "contract-edit-input";
+  input.value = originalSymbol;
+  input.setAttribute("aria-label", "编辑合约代码");
+  nameElement.replaceWith(input);
+  input.focus();
+  input.select();
+
+  let finished = false;
+
+  async function saveEdit() {
+    if (finished) {
+      return;
+    }
+
+    const [nextSymbol] = parseBatchSymbols(input.value);
+    if (!nextSymbol || !isValidContractSymbol(nextSymbol)) {
+      setStatus("格式不对");
+      input.focus();
+      input.select();
+      return;
+    }
+
+    if (nextSymbol === originalSymbol) {
+      await finishEdit();
+      return;
+    }
+
+    const { contracts = [] } = await getLocalState([STORAGE_KEYS.contracts]);
+    if (contracts.some((item) => item.sinaSymbol === nextSymbol)) {
+      setStatus("已存在");
+      input.focus();
+      input.select();
+      return;
+    }
+
+    const nextContracts = contracts.map((item) => {
+      if (item.sinaSymbol !== originalSymbol) {
+        return item;
+      }
+      return createContract(nextSymbol);
+    });
+
+    await saveContracts(nextContracts);
+    await notifyContractsUpdated();
+    await finishEdit("已更新");
+  }
+
+  async function cancelEdit() {
+    if (finished) {
+      return;
+    }
+    await finishEdit();
+  }
+
+  async function finishEdit(statusTextValue = "") {
+    finished = true;
+    editingSymbol = "";
+    await refreshView(statusTextValue);
+    await restartAutoRefresh();
+  }
+
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      void saveEdit();
+    }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      void cancelEdit();
+    }
+  });
+
 }
 
 async function notifyContractsUpdated() {
@@ -133,6 +253,10 @@ async function refreshView(statusOverride = "") {
   const contracts = Array.isArray(state.contracts) ? state.contracts : [];
   const prices = state.prices || {};
 
+  if (editingSymbol) {
+    return;
+  }
+
   renderContracts(contracts, prices);
 
   if (statusOverride) {
@@ -141,7 +265,7 @@ async function refreshView(statusOverride = "") {
   }
 
   if (state.lastUpdated) {
-    setStatus(`最近刷新 ${new Date(state.lastUpdated).toLocaleTimeString("zh-CN", { hour12: false })}`);
+    setStatus(formatMinuteSecond(state.lastUpdated));
     return;
   }
 
@@ -182,11 +306,7 @@ async function addContract(event) {
       continue;
     }
 
-    const displayName = getContractDisplayName(symbol) || extractContractPrefix(symbol) || symbol;
-    additions.push({
-      displayName,
-      sinaSymbol: symbol
-    });
+    additions.push(createContract(symbol));
   }
 
   if (!additions.length) {
